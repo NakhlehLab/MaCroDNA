@@ -2,7 +2,8 @@
 ## Accurate integration of single-cell DNA and RNA data for a deeper understanding of tumor heterogeneity
 
 ## Description of the directories
-## How to install required packages 
+## How to install required packages
+   - ### Installation of Gurobi
 ## Usage
 ## Definition of input arguments
 ## Reproducibility

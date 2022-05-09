@@ -4,6 +4,7 @@
 ## Description of the directories
 ## How to install required packages
    - ### Installation of Gurobi
+   - ### Python required packages
 ## Usage
 ## Definition of input arguments
 ## Reproducibility

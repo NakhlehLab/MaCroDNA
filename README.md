@@ -1,9 +1,10 @@
 # MaCroDNA
 ## Accurate integration of single-cell DNA and RNA data for a deeper understanding of tumor heterogeneity
 
-# Installation
-## Installation of Gurobi
-## Python requirements
-# Reproducibility
-# Contact
+## Description of the directories
+## How to install required packages 
+## Usage
+## Definition of input arguments
+## Reproducibility
+## Contacts
 If you have any questions, please contact xiru.huang@rice.edu or edrisi.rice@gmail.com

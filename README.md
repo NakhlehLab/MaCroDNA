@@ -5,27 +5,26 @@ By Mohammadamin Edrisi, Xiru Huang, Huw A. Ogilvie and Luay Nakhleh
 Department of Computer Science, Rice University
 
 ### Table of Contents
-[1. Introduction](#introduction-id)
+[1. Introduction](#Introduction)
 
-[2. Citation](#citation-id)
+[2. Citation](#Citation)
 
-[3. Installation](#installation-id)
+[3. Installation](#Installation)
 
-[4. Usage](#usage-id)
-
-[5. Contacts](#contact-id)
+[4. Usage](#Usage)
 
 
-### Introduction {#introduction-id}
+
+### Introduction
 MaCroDNA (**Ma**tching **Cro**ss-**D**omain **N**ucleic **A**cids) is a correlation-based 
 method to perform mapping between scRNA-seq gene expression and scDNA-seq copy number values. 
 This repository contains the source code for MaCroDNA described in the paper "MaCroDNA: Accurate integration of single-cell DNA and RNA
 data for a deeper understanding of tumor heterogeneity".
 
-### Citation {#citation-id}
+### Citation
 
 
-### Installation {#installation-id}
+### Installation
 **Package Requirements**
 >Python >= 3.7
 > 
@@ -154,7 +153,7 @@ Test Success
 
 For more complicated test, you can use `test_macrodna.py` under `test/` directory
 
-### Usage {#usage-id}
+### Usage
 
 **cell-to-cell mapping**
 
@@ -197,6 +196,3 @@ The output `cell2clone` is also a dataframe.
 The index ids are the RNA cell ids. 
 It has two columns. One is "predict_cell", which is the corresponding DNA cell for that RNA cell.
 The other column is "predict_clone", which is the predict clone id for that RNA cell.
-
-### Contacts {#contact-id}
-If you have any questions, please contact xiru.huang@rice.edu or edrisi@rice.edu

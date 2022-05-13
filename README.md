@@ -6,7 +6,6 @@
    - ### Installation of Gurobi
    - ### Python required packages
 ## Usage
-## Definition of input arguments
 ## Reproducibility
 ## Contacts
 If you have any questions, please contact xh29@rice.edu or edrisi@rice.edu

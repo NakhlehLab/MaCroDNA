@@ -5,12 +5,9 @@ By Mohammadamin Edrisi, Xiru Huang, Huw A. Ogilvie and Luay Nakhleh
 Department of Computer Science, Rice University
 
 ### Table of Contents
-[1. Introduction](#Introduction)
-
-[2. Citation](#Citation)
-
-[3. Installation](#Installation)
-
+[1. Introduction](#Introduction)  
+[2. Citation](#Citation)  
+[3. Installation](#Installation)  
 [4. Usage](#Usage)
 
 

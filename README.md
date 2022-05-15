@@ -200,4 +200,4 @@ It has two columns. One is "predict_cell", which is the corresponding DNA cell f
 The other column is "predict_clone", which is the predict clone id for that RNA cell.
 
 ### Contacts
-
+If you have any questions, please contact us via xh29@rice.edu or edrisi@rice.edu

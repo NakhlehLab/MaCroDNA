@@ -6,8 +6,11 @@ Department of Computer Science, Rice University
 
 ### Table of Contents
 [1. Introduction](#Introduction)  
+
 [2. Citation](#Citation)  
+
 [3. Installation](#Installation)  
+
 [4. Usage](#Usage)
 
 

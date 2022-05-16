@@ -1,5 +1,5 @@
 # MaCroDNA
-_________________
+
 By Mohammadamin Edrisi, Xiru Huang, Huw A. Ogilvie and Luay Nakhleh
 
 Department of Computer Science, Rice University
@@ -63,7 +63,7 @@ Other installation methods can be found
 
 **MaCroDNA Installation**
 
-`pip install `
+`pip install -i https://test.pypi.org/simple/ MaCroDNA==0.0.5 `
 
 **Installation Test**
 
@@ -200,4 +200,4 @@ It has two columns. One is "predict_cell", which is the corresponding DNA cell f
 The other column is "predict_clone", which is the predict clone id for that RNA cell.
 
 ### Contacts
-If you have any questions, please contact us via xh29@rice.edu or edrisi@rice.edu
+If you have any questions, please contact us via edrisi@rice.edu or xiru.huang@rice.edu

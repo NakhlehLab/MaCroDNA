@@ -63,7 +63,7 @@ Other installation methods can be found
 
 **MaCroDNA Installation**
 
-`pip install -i https://test.pypi.org/simple/ MaCroDNA==0.0.5 `
+`pip install MaCroDNA==0.0.1`
 
 **Installation Test**
 

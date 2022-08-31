@@ -63,11 +63,11 @@ Other installation methods can be found
 
 **MaCroDNA Installation**
 
-`pip install MaCroDNA==0.0.1`
+MaCroDNA is under the directory `src/MaCroDNA/macrodna.py`
 
 **Installation Test**
 
-After installing MaCroDNA, you can test the installation using the following code in python
+You can test the installation using the following code in python
 
 ````
 $ python
@@ -106,15 +106,10 @@ g7        0      0      0      0
 **********
 Start Mapping RNA cells to DNA clones
 **********
-After selecting the same genes in RNA and DNA
 number of cells in dna data 4
 number of cells in rna data 4
 number of genes in dna data 6
 number of genes in rna data 6
-[[ 0.95553309  0.          0.15877684 -0.29277002]
- [ 0.          0.          0.          0.        ]
- [-0.34698896  0.          0.87447463  0.86824314]
- [-0.18650096  0.          0.7592566   1.        ]]
 1 0
 MaCroDNA will be run for 1 steps
 the smallest set has 4 number of cells
@@ -123,7 +118,7 @@ Academic license - for non-commercial use only - expires 2023-04-18
 Gurobi Optimizer version 9.5.1 build v9.5.1rc2 (linux64)
 Thread count: 10 physical cores, 20 logical processors, using up to 20 threads
 Optimize a model with 9 rows, 16 columns and 48 nonzeros
-Model fingerprint: 0xbe36aead
+Model fingerprint: 0xd5e76473
 Variable types: 0 continuous, 16 integer (16 binary)
 Coefficient statistics:
   Matrix range     [1e+00, 1e+00]
@@ -151,6 +146,9 @@ the number of associations in the correspondence matrix 4.0
 Finish Mapping
 Test Success
 **********
+
+Process finished with exit code 0
+
 ````
 
 For more complicated test, you can use `test_macrodna.py` under `test/` directory
@@ -170,13 +168,17 @@ To get the cell-to-cell mapping
 $ python
 > from MaCroDNA import MaCroDNA
 > macrodna = MaCroDNA(rna_df, dna_df)
-> cell2cell = macrodna.cell2cell_assignment()
+> cell2cell, cell2cell_step = macrodna.cell2cell_assignment()
 ````
 
-The output `cell2cell` is also a dataframe.
+The first output `cell2cell` is also a dataframe.
 The index ids are the RNA cell ids. 
 And it only has on column "predict_cell", which is the DNA cell assigned to the corresponding RNA cell.
 
+The second output `cell2cell_step` is also a dataframe.
+It has two columns "predict_cell" and "step". 
+"predict_cell" is same as that in `cell2cell`.
+"step" indicates at which step this result is inferred. And the smaller the step number is, the more confident the result is.
 
 **cell-to-clone mapping**
 
@@ -198,6 +200,9 @@ The output `cell2clone` is also a dataframe.
 The index ids are the RNA cell ids. 
 It has two columns. One is "predict_cell", which is the corresponding DNA cell for that RNA cell.
 The other column is "predict_clone", which is the predict clone id for that RNA cell.
+
+### Analysis
+The comparison between MaCroDNA and other methods can be found in `analysis/Analysis.ipynb`
 
 ### Contacts
 If you have any questions, please contact us via edrisi@rice.edu or xiru.huang@rice.edu

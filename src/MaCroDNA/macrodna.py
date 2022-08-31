@@ -83,22 +83,15 @@ class MaCroDNA:
 
         return results
 
-
     def cell2cell_assignment(self):
         dna_cells = list(self.dna_df.columns)
         rna_cells = list(self.rna_df.columns)
-
-        rna_genes = list(self.rna_df.index)
-        dna_genes = list(self.dna_df.index)
-        same_genes = set(rna_genes).intersection(dna_genes)
-
-        self.dna_df = self.dna_df.loc[same_genes, :]
-        self.rna_df = self.rna_df.loc[same_genes, :]
-
+        genes = set(self.dna_df.index).intersection(self.rna_df.index.to_list())
+        self.dna_df = self.dna_df.loc[genes,:]
+        self.rna_df = self.rna_df.loc[genes,:]
 
         dna_np = self.dna_df.T.to_numpy()
         rna_np = self.rna_df.T.to_numpy()
-        print("After selecting the same genes in RNA and DNA")
         print("number of cells in dna data %s" % (dna_np.shape[0]))
         print("number of cells in rna data %s" % (rna_np.shape[0]))
         print("number of genes in dna data %s" % (dna_np.shape[1]))
@@ -112,25 +105,29 @@ class MaCroDNA:
         for i in range(rna_np.shape[0]):
             for j in range(dna_np.shape[0]):
                 corrs[i][j] = self.cosine_similarity_np(rna_np[i], dna_np[j])
-        print(corrs)
 
         # create a matrix for storing the global correspondences
         global_correspondence = np.zeros((rna_np.shape[0], dna_np.shape[0]))
+        # create a matrix of correspondence where the entries represent the steps
+        tagged_correspondence = np.zeros((rna_np.shape[0], dna_np.shape[0]))
         # create index lists for dna and rna
         global_dna_idx = np.array([i for i in range(dna_np.shape[0])])
         global_rna_idx = np.array([i for i in range(rna_np.shape[0])])
 
         # calculate the number of steps
-        quotient, remainder = divmod(max(global_rna_idx.shape[0], global_dna_idx.shape[0]),
-                                     min(global_rna_idx.shape[0], global_dna_idx.shape[0]))
+        quotient, remainder = divmod(global_rna_idx.shape[0],
+                                     global_dna_idx.shape[0])
         print(quotient, remainder)
-        n_iters = int(math.ceil(quotient))
+        n_iters = int(quotient)
+        if remainder != 0:
+            n_iters += 1
         print("MaCroDNA will be run for %s steps" % (n_iters))
 
-        # iterations
         rna_idx = np.copy(global_rna_idx)
 
-        for _ in range(n_iters):
+        # iterations
+
+        for step_ in range(n_iters):
 
             r = self.ilp(rna_idx, global_dna_idx, corrs)
             # identify the indices with assignments
@@ -138,22 +135,26 @@ class MaCroDNA:
             for i in range(r.shape[0]):
                 for j in range(r.shape[1]):
                     if r[i][j] == 1:
-                        global_correspondence[rna_idx[i]][global_dna_idx[j]] = 1
+                        global_correspondence[rna_idx[i]][global_dna_idx[j]] = 1  # binary correspondence matrix
+                        tagged_correspondence[rna_idx[i]][global_dna_idx[j]] = step_ + 1  # tagged correspondence matrix
 
             sums = np.sum(global_correspondence, axis=1)
             idx_remove = np.argwhere(sums == 1)
             idx_remove = np.squeeze(idx_remove)
-            rna_idx = np.delete(global_rna_idx, idx_remove)
+            rna_idx = np.delete(global_rna_idx,
+                                idx_remove)  # the rna cells whose correspondence was found in the previous step are removed from the batch
 
         print("the number of associations in the correspondence matrix %s" % np.sum(global_correspondence))
 
         result_df = pd.DataFrame(data=global_correspondence, columns=dna_cells, index=rna_cells)
+        tagged_df = pd.DataFrame(data=tagged_correspondence, columns=dna_cells, index=rna_cells)
 
         # find the dna that map to rna
         result_rna = []
         result_dna = []
         rna_cells = list(result_df.index)
         dna_cells = list(result_df.columns)
+        test = result_df.sum(axis=1)
         for d in rna_cells:
             tmp_rna = list(result_df.loc[d, :])
             tmp_rna_dna_index = tmp_rna.index(1)
@@ -163,23 +164,39 @@ class MaCroDNA:
         tmp_result = pd.DataFrame(list(zip(result_dna, result_rna)), columns=["predict_cell", "cell"])
         tmp_result = tmp_result.set_index("cell")
 
-        return tmp_result
+        # change the format of the tagged correspondence matrix similar to the binary correspondence matrix
+        result_rna_tagged = []
+        result_dna_tagged = []
+        result_tags = []
+        rna_cells_tagged = list(tagged_df.index)
+        dna_cells_tagged = list(tagged_df.columns)
+        for d in rna_cells_tagged:
+            tmp_rna = list(tagged_df.loc[d, :])
+            for step__ in range(n_iters):
+                if (step__ + 1) in tmp_rna:
+                    tmp_rna_dna_index = tmp_rna.index(step__ + 1)
+                    tmp_rna_dna = dna_cells_tagged[tmp_rna_dna_index]
+                    result_dna_tagged.append(tmp_rna_dna)
+                    result_rna_tagged.append(d)
+                    result_tags.append(step__ + 1)
+        tmp_result_tagged = pd.DataFrame(list(zip(result_dna_tagged, result_rna_tagged, result_tags)),
+                                         columns=["predict_cell", "cell", "step"])
+        tmp_result_tagged = tmp_result_tagged.set_index("cell")
+
+        return tmp_result, tmp_result_tagged
 
     def cell2clone_assignment(self):
 
-        #     get cells in both rna and dna
-        rna_result = self.cell2cell_assignment()
+        rna_result, _ = self.cell2cell_assignment()
         dna_cells = list(self.dna_df.columns)
-        same_cell = list(set(list(rna_result.index)).intersection(dna_cells))
-        result_same = rna_result.loc[same_cell, :]
 
         # map to clone
         dna_label = self.dna_label
         dna_label = dna_label.set_index("cell")
 
-        dna_result_label = dna_label.loc[result_same["predict_cell"]]["clone"].tolist()
-        result_same["predict_clone"] = dna_result_label
-        return result_same
+        dna_result_label = dna_label.loc[rna_result["predict_cell"]]["clone"].tolist()
+        rna_result["predict"] = dna_result_label
+        return rna_result
 
     def tiny_test(self):
         dna_data = pd.DataFrame.from_dict({"cell1": [2, 2, 3, 1, 6, 2],

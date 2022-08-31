@@ -63,7 +63,7 @@ for (tmp_patient in patient_list) {
       names(ref_dna) <- name
       ref_dna <- as.factor(ref_dna)
       crc.prediction <- TransferData(anchorset = crc.anchors, refdata = ref_dna, 
-                                     k.weight=5)
+                                     k.weight=15)
       
       clones = crc.prediction$predicted.id
       result_dna <- data.frame("predict"=clones)

@@ -13,6 +13,8 @@ Department of Computer Science, Rice University
 
 [4. Usage](#Usage)
 
+[5. Analysis](#Analysis)
+
 [5. Contacts](#contacts)
 
 

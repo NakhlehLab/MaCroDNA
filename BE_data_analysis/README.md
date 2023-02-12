@@ -102,7 +102,7 @@ For each biopsy, the output can be found in the `tgt_dir` in a CSV file named as
 We used `aggergate_macrodna.py` to prepare the inputs to phylosignal (https://cran.r-project.org/web/packages/phylosignal/index.html) R package. This script takes the MaCroDNA results from the previous section and outputs the copy number and gene expression profiles for the paired cells. 
 To run `aggregate_macrodna.py`:
 
-1. Set `dna_src_dir` to the path to the directory containing the filtered (from the section [Filtering on the scDNA-seq read count tables]).
+1. Set `dna_src_dir` to the path to the directory containing the filtered (from the section [Filtering on the scDNA-seq read count tables](https://github.com/NakhlehLab/MaCroDNA/tree/main/BE_data_analysis#filtering-on-the-scdna-seq-read-count-tables)).
 2. Set `rna_src_dir` to the path to the directory containing the filtered gene expression data (from the section [Filtering on the scRNA-seq gene expression tables]).
 3. Set `res_dir` to the path to the directory containing the MaCroDNA results from the previous section.
 4. Set `tgt_dir` to the desired path for storing the results.

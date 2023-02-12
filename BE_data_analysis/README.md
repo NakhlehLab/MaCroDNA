@@ -126,3 +126,7 @@ Run the R script using the following command:
 
 The outputs are the K* values (written in`<biopsy name>_stat.csv`), the corresponding p-values (written in `<biopsy name>_pval.csv`) and the newick file of the phylogenetic tree (written in `<biopsy name>_tre.nwk`) in the working directory.
 
+
+### License
+This project is covered under MIT License.	
+

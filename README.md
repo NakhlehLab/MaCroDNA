@@ -208,3 +208,6 @@ The comparison between MaCroDNA and other methods can be found in `analysis/Anal
 
 ### Contacts
 If you have any questions, please contact us via edrisi@rice.edu or xiru.huang@rice.edu
+
+### License
+This project is covered under MIT License

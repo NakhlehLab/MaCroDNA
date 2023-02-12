@@ -103,7 +103,7 @@ We used `aggergate_macrodna.py` to prepare the inputs to phylosignal (https://cr
 To run `aggregate_macrodna.py`:
 
 1. Set `dna_src_dir` to the path to the directory containing the filtered (from the section [Filtering on the scDNA-seq read count tables](https://github.com/NakhlehLab/MaCroDNA/tree/main/BE_data_analysis#filtering-on-the-scdna-seq-read-count-tables)).
-2. Set `rna_src_dir` to the path to the directory containing the filtered gene expression data (from the section [Filtering on the scRNA-seq gene expression tables]).
+2. Set `rna_src_dir` to the path to the directory containing the filtered gene expression data (from the section [Filtering on the scRNA-seq gene expression tables](https://github.com/NakhlehLab/MaCroDNA/blob/main/BE_data_analysis/README.md#filtering-on-the-scrna-seq-gene-expression-tables)).
 3. Set `res_dir` to the path to the directory containing the MaCroDNA results from the previous section.
 4. Set `tgt_dir` to the desired path for storing the results.
 Run the following command:

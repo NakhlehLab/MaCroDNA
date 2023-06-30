@@ -198,7 +198,6 @@ class MaCroDNA:
         return tmp_result, tmp_result_tagged, sum(obj_scores), n_iters
 
     def leave_one_out(self, cell_idx, K_steps, biopsy_name):
-        # print(f"the cell to leave out {cell_idx}")
 
         dna_cells = list(self.dna_df.columns)
         rna_cells = list(self.rna_df.columns)
@@ -210,10 +209,6 @@ class MaCroDNA:
 
         dna_np = self.dna_df.T.to_numpy()
         rna_np = self.rna_df.T.to_numpy()
-        # print("number of cells in dna data %s" % (dna_np.shape[0]))
-        # print("number of cells in rna data %s" % (rna_np.shape[0]))
-        # print("number of genes in dna data %s" % (dna_np.shape[1]))
-        # print("number of genes in rna data %s" % (rna_np.shape[1]))
 
         # create the array containing Pearson correlation coefficients between all possible pairs
 
@@ -224,13 +219,10 @@ class MaCroDNA:
             for j in range(dna_np.shape[0]):
                 corrs[i][j] = self.cosine_similarity_np(rna_np[i], dna_np[j])
 
-        # print(f"shape of the correlation coefficients matrix {corrs.shape}")
         # delete the cell's correlation coefficients from the global correlation matrix 
         loo_corrs = np.delete(corrs, cell_idx, 0)
-        # print(f"shape of the correlation coefficients matrix with cell index {cell_idx}, {loo_corrs.shape}")
         # keep the cell-specific correlation coefficients in a separate vector
         cell_specific_corr = np.take(corrs, cell_idx, axis=0)
-        # print(f"shape of the cell-specific correlation coefficients {cell_specific_corr.shape}")
         # remove the cell's info from the numpy array of rna cells
         rna_np = np.delete(rna_np, cell_idx, 0)
         # now, we are going to run MaCroDNA on the rest of the data as usual
@@ -250,7 +242,6 @@ class MaCroDNA:
         n_iters = int(quotient)
         if remainder != 0:
             n_iters += 1
-        # print("MaCroDNA will be run for %s steps" % (n_iters))
 
         rna_idx = np.copy(global_rna_idx)
 
@@ -275,8 +266,6 @@ class MaCroDNA:
             idx_remove = np.squeeze(idx_remove)
             rna_idx = np.delete(global_rna_idx,
                                 idx_remove)  # the rna cells whose correspondence was found in the previous step are removed from the batch
-
-        # print("the number of associations in the correspondence matrix %s" % np.sum(global_correspondence))
 
         result_df = pd.DataFrame(data=global_correspondence, columns=dna_cells, index=rna_cells)
         tagged_df = pd.DataFrame(data=tagged_correspondence, columns=dna_cells, index=rna_cells)
@@ -309,7 +298,6 @@ class MaCroDNA:
         # sort the correlation coefficients of the left-out rna cell with respect to the dna cells (descending order)
         sorted_idx = np.argsort(cell_specific_corr)[::-1]
         # iterate over the sorted indices and find the first eligible match
-        # print(f"number of rna cells so far {len(result_rna_tagged)}")
         for idx_ in sorted_idx:
             if idx_ in idx_eligible:
                 result_dna_tagged.append(dna_cells_tagged[idx_])
@@ -317,14 +305,11 @@ class MaCroDNA:
                 result_tags.append("TEST")
                 obj_scores.append(cell_specific_corr[idx_])
                 result_corrs.append(cell_specific_corr[idx_])
-                # print("assigned the left-out cell to a dna cell")
                 break
-        # print(f"number of rna cells assigned to dna cells {len(result_rna_tagged)}")
-        # print(result_tags)
+
         tmp_result_tagged = pd.DataFrame(list(zip(result_dna_tagged, result_rna_tagged, result_tags, result_corrs)),
                                          columns=["predicted_dna_cell", "rna_cell", "step", "corr_val"])
         tmp_result_tagged = tmp_result_tagged.set_index("rna_cell")
-        # print(f"objective values from all steps {obj_scores}")
         print(f"name of the left-out RNA cell {cell_name} from sample {biopsy_name}")
         z = np.sum(tmp_result_tagged["corr_val"].values)
         print(f"sum of the correlation values of all pairs {z}")
@@ -335,7 +320,6 @@ class MaCroDNA:
 def func(dna_src_dir, rna_src_dir, tgt_dir, d):
     dna = pd.read_csv(os.path.join(dna_src_dir,d+"_annotated_filtered_normed_count_table.csv"),index_col=0)
     rna = pd.read_csv(os.path.join(rna_src_dir,d+"_filtered_normed_count_table.csv"), index_col=0)
-    # print(f"DNA cells: {dna.shape[1]}, RNA cells: {rna.shape[1]}, num of genes: {dna.shape[0]}")
     print(f"name of the biopsy: {d}")
     print(f"-------------------------------------")
     run_model = MaCroDNA(rna, dna)
@@ -355,14 +339,13 @@ def func(dna_src_dir, rna_src_dir, tgt_dir, d):
 if __name__ == "__main__":
 
     biop_sample = ["PAT20_CARD", "PAT20_ESO", "PAT9_NDBE", "PAT14_NDBE", "PAT16_NDBE", "PAT6_LGD", "PAT19_LGD", "PAT6_HGD", "PAT14_HGD", "PAT20_HGD1", "PAT16_EAC"]
-    # biop_sample = ["PAT20_ESO"]
     dna_src_dir = "./annotated_scDNAseq_filtered_cells_pseudocount_copynumber_log"
     rna_src_dir = "./scRNAseq_filtered_cells_genes_pseudocount_rpm_log"
     tgt_dir = "./macrodna_res_log_rna_stability/"
     if not os.path.isdir(tgt_dir):
         os.mkdir(tgt_dir)
 
-    print(f"start generating random assignments for all biopsies")
+    print(f"start performing leave-one-out experiment for all biopsies")
     pool = multiprocessing.Pool(len(biop_sample))
     start_time = time.perf_counter()
     processes = [pool.apply_async(func, args=(dna_src_dir, rna_src_dir, tgt_dir, d)) for d in biop_sample]
@@ -370,7 +353,7 @@ if __name__ == "__main__":
     pool.close()
     pool.join()
     finish_time = time.perf_counter()
-    print(f"random assignment was done for all biopsies in {finish_time-start_time} seconds")
+    print(f"LOO experiment was done for all biopsies in {finish_time-start_time} seconds")
 
 
 

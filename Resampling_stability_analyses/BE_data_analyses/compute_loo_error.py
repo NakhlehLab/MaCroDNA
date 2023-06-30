@@ -33,10 +33,6 @@ def obj_vals_hists(rna_cells, sample, src_dir, original_val):
 	fig, ax = plt.subplots()
 	ax.hist(loo_obj_vals, bins=50, density=False)
 	ax.axvline(original_val, ls="--", color="r")
-	# score_label = f"Score on original\ndata: {sample:.3f})"
-	# ymin, ymax = ax.get_ylim()
-	# ax.text(d[bio] - 2.6, ymax/2, score_label, fontsize=12)
-	# ax.set_xlabel("Score (sum of the Pearson correlation values of pairs)")
 	_ = ax.set_ylabel("Counts")
 	ax.set_title(sample.replace("_", " (").replace("PAT", "Patient ")+")")
 	plt.savefig(os.path.join("./", sample)+"_loo_obj_vals_hist.pdf"
@@ -47,7 +43,6 @@ def obj_vals_hists(rna_cells, sample, src_dir, original_val):
 def E_loo_error(df_entire, src_dir):
 	# calculate the original value of the objective function
 	original_val = np.sum(df_entire['corr_val'].values)
-	# print(original_val)
 	D_vals = df_entire['corr_val'].values
 	D_ids = df_entire['rna_cell'].values
 	f_D_dict = dict(zip(D_ids, D_vals))
@@ -81,8 +76,6 @@ def calculate_pdist(dna_src_dir, sample):
 
 	dna = pd.read_csv(os.path.join(dna_src_dir,sample+"_annotated_filtered_normed_count_table.csv"),index_col=0)
 	dna_np = dna.T.to_numpy()
-	# pdv = pdist(dna_np, 'euclidean')
-	# pdv = pdist(dna_np, 'cityblock')
 	pdv = pdist(dna_np, 'minkowski', p=1.)
 	return pdv
 
@@ -96,10 +89,9 @@ def label_point(x, y, val, ax):
 if __name__ == "__main__":
 
 	biop_sample = ["PAT20_CARD", "PAT20_ESO", "PAT9_NDBE", "PAT14_NDBE", "PAT16_NDBE", "PAT6_LGD", "PAT19_LGD", "PAT6_HGD", "PAT14_HGD", "PAT20_HGD1", "PAT16_EAC"]
-	# biop_sample = ["PAT20_ESO"]
+	dna_src_dir = "./annotated_scDNAseq_filtered_cells_pseudocount_copynumber_log"
+	rna_src_dir = "./scRNAseq_filtered_cells_genes_pseudocount_rpm_log"
 	src_dir = "./macrodna_res_log_rna_stability/"
-	rna_src_dir = "/Users/edrisi/Documents/ongoing_projects/MaCroDNA/phylosignal_analysis/Busslinger_data/scRNAseq_filtered_cells_genes_pseudocount_rpm_log"
-	dna_src_dir = "/Users/edrisi/Documents/ongoing_projects/MaCroDNA/phylosignal_analysis/Busslinger_data/annotated_scDNAseq_filtered_cells_pseudocount_copynumber_log"
 
 	x = []
 	y = []
@@ -117,7 +109,6 @@ if __name__ == "__main__":
 		df_entire = pd.read_csv(os.path.join(src_dir, sample+"_cell2cell_assignment_indexed.csv"))
 
 		original_assignments = dict(zip(df_entire['rna_cell'], df_entire['predicted_dna_cell']))
-		# print(original_assignments)
 
 		all_pairs_counts = np.zeros((len(rna_cells), len(dna_cells)))
 
@@ -130,7 +121,6 @@ if __name__ == "__main__":
 		for c in rna_cells:
 			loo_assignments[c] = []
 			loo_different_assign_counts[c] = 0
-			# loo_different_assign_types_counts[c] = 0
 			loo_different_assign_types[c] = set()
 
 		for cell_idx in range(len(rna_cells)):
@@ -151,13 +141,8 @@ if __name__ == "__main__":
 		for i in range(len(all_pairs_counts)):
 			all_pairs_counts[i] /= all_pairs_counts.shape[1]
 
-		# print(loo_assignments)
-		# print(loo_different_assign_types)
 		for key in loo_different_assign_counts:
-			# loo_different_assign_ratio[key] = loo_different_assign_counts[key]/len(rna_cells)
 			loo_different_assign_ratio[key] = loo_different_assign_counts[key]
-			# loo_different_assign_types_counts[key] = len(loo_different_assign_types[key])/len(dna_cells)
-			# if len(loo_different_assign_types[key]) != 0:
 			loo_different_assign_types_counts[key] = len(loo_different_assign_types[key])
 
 		pdv = calculate_pdist(dna_src_dir = dna_src_dir, sample = sample)
@@ -177,15 +162,10 @@ if __name__ == "__main__":
 		iqr = q3 - q1
 		lower_bound = q1 - 1.5*iqr
 		upper_bound = q3 + 1.5*iqr
-		# outliers = data[(data < lower_bound) | (data > upper_bound)]
 		outliers = data[(data > upper_bound)]
 		print(outliers, upper_bound, lower_bound)
-		# y.append(np.mean(np.array(heapq.nlargest(10, list(loo_different_assign_types_counts.values())))))
-		# y.append(np.max(outliers))
-		# y.append(len(outliers))
 		y.append(np.max(data) - np.min(data))
 		print(np.max(data), np.min(data))
-		# y.append(stats.mode(data, keepdims=False))
 
 		for val_idx in range(len(current_div_idx)):
 			df_diversity_idx['sample'].append(sample)
@@ -209,7 +189,6 @@ if __name__ == "__main__":
 	print(reg.coef_)
 	print(reg.intercept_)
 	df_ = pd.DataFrame({'heterogeneity': x, 'max count': y, 'sample': biop_sample})
-	# fig, ax = plt.subplots()
 	g = sns.lmplot(x="heterogeneity", y="max count", data=df_, fit_reg=True)
 	label_point(df_['heterogeneity'], df_['max count'], df_['sample'], plt.gca())
 	g.set(title = f"pearson: {res_pearson.statistic:.3f}, {res_pearson.pvalue:.3f}\nspearman: {res.statistic:.3f}, {res.pvalue:.3f}")
@@ -218,7 +197,6 @@ if __name__ == "__main__":
 	plt.savefig(os.path.join("./","max_assign_instability_index_ITH.pdf")
 		, transparent=True)
 
-	# df_['product'] = df_['max count'] * df_['max ratio']
 	df_ = df_.sort_values('max count', ascending=False)
 	print(df_)
 

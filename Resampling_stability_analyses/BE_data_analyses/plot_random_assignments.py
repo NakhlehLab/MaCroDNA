@@ -6,12 +6,10 @@ import numpy as np
 import seaborn as sns
 import os
 import pickle
-# sns.set_style("whitegrid", {"axes.facecolor": ".87"})
 
 
 if __name__=="__main__":
 	biop_sample = ["PAT20_CARD", "PAT20_ESO", "PAT9_NDBE", "PAT14_NDBE", "PAT16_NDBE", "PAT6_LGD", "PAT19_LGD", "PAT6_HGD", "PAT14_HGD", "PAT20_HGD1", "PAT16_EAC"]
-	# biop_sample = ["PAT20_ESO"]
 	src_dir = "./macrodna_res_log_random_test"
 
 	# read the actual objective functions 
@@ -29,8 +27,6 @@ if __name__=="__main__":
 		pval = x_ / len(a)
 		fig, ax = plt.subplots()
 
-		# ax.grid()
-		# ax.set_axisbelow(True)
 		ax.hist(a, bins=50, density=False)
 		ax.axvline(d[bio], ls="--", color="r")
 		score_label = f"Score on original\ndata: {d[bio]:.3f}\n(p-value: {pval:.3f})"
@@ -41,3 +37,6 @@ if __name__=="__main__":
 		ax.set_title(bio.replace("_", " (").replace("PAT", "Patient ")+")")
 		plt.savefig(os.path.join(src_dir, bio)+"random_hist.pdf"
 			, transparent=True)
+
+
+

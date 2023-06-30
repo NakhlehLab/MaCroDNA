@@ -26,11 +26,14 @@ The script named `run_loo_experiment.py` performs the leave-one-out trials on al
 
 1. Set `dna_src_dir` to the path to the directory containing the filtered (from the section [Filtering on the scDNA-seq read count tables](https://github.com/NakhlehLab/MaCroDNA/tree/main/BE_data_analysis#filtering-on-the-scdna-seq-read-count-tables)).
 2. Set `rna_src_dir` to the path to the directory containing the filtered gene expression data (from the section [Filtering on the scRNA-seq gene expression tables](https://github.com/NakhlehLab/MaCroDNA/blob/main/BE_data_analysis/README.md#filtering-on-the-scrna-seq-gene-expression-tables)).
-3. Set `tgt_dir` to the desired path for storing the results.
+3. Set `tgt_dir` to the desired path for storing the results. Here, this is set to `./macrodna_res_log_rna_stability/`.
 
+The names of the input CSV files are assumed to follow the same format as in the experiment [Random assignment test for BE biopsies](https://github.com/NakhlehLab/MaCroDNA/blob/main/Resampling_stability_analyses/BE_data_analyses/README.md#random-assignment-test-for-be-biopsies).
 
+### Visualizing the box plots of the assignment instability indices 
+The script named `box_plots_from_loo_errors.py` draws the box plots showing the range of values for the assignment instability indices across all scRNA-seq cells for each biopsy. To run this code, set the variables `dna_src_dir` and `rna_src_dir` as for `run_loo_experiment.py` and set `src_dir` to the same path for `tgt_dir` in `run_loo_experiment.py`. The output is a figure named `diversity_idx_boxplots.pdf`.
 
-
+### Visualizing the correlation between AII and intratumor heterogeneity
 
 
 

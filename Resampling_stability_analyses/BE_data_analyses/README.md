@@ -33,7 +33,24 @@ The names of the input CSV files are assumed to follow the same format as in the
 ### Visualizing the box plots of the assignment instability indices 
 The script named `box_plots_from_loo_errors.py` draws the box plots showing the range of values for the assignment instability indices across all scRNA-seq cells for each biopsy. To run this code, set the variables `dna_src_dir` and `rna_src_dir` as for `run_loo_experiment.py` and set `src_dir` to the same path for `tgt_dir` in `run_loo_experiment.py`. The output is a figure named `diversity_idx_boxplots.pdf`.
 
-### Visualizing the correlation between AII and intratumor heterogeneity
+### Visualizing the correlation between assignment instability index and heterogeneity score
+For each biopsy, we calculated the pairwise L1-norm distances between all scDNA-seq cells; then, to avoid the effect of outliers, instead of the mean, we used the median of the distribution of the pairwise distances as the heterogeneity score. The script named `compute_loo_error.py` calculates the heterogeneity scores for all biopsies, and computes the Pearson and Spearman correlations between the heterogeneity scores and the assignment instability indices. Finally, it plots the scatter plot of the data along with the correlation coefficients.
+To run this code, set the variables `dna_src_dir`, `rna_src_dir`, and `src_dir` the same way as for the previous code `box_plots_from_loo_errors.py`
 
+## Retrieval of BE biopsy labels
+In this experiment, we aggregated all the scDNA-seq and scRNA-seq cells from all biopsies and ran MaCroDNA on the pooled data without providing the cells' biopsy labels to the method. This way, we allowed the scRNA-seq cells to be assigned to any biopsy’s scDNA-seq cell. Having the true biopsy labels, we measured the accuracy of assignments per biopsy, as the number of the scRNA-seq cells that are assigned to a scDNA-seq cell from the same biopsy divided by the total number of scRNA-seq cells in the biopsy.  
 
+The script named `macrodna_patient_label_retrieval.py` pools all the cells from the two modalities and runs MaCroDNA on the pooled data. To run this script:
+
+1. Set `dna_src_dir` to the path to the directory containing the filtered (from the section [Filtering on the scDNA-seq read count tables](https://github.com/NakhlehLab/MaCroDNA/tree/main/BE_data_analysis#filtering-on-the-scdna-seq-read-count-tables)).
+2. Set `rna_src_dir` to the path to the directory containing the filtered gene expression data (from the section [Filtering on the scRNA-seq gene expression tables](https://github.com/NakhlehLab/MaCroDNA/blob/main/BE_data_analysis/README.md#filtering-on-the-scrna-seq-gene-expression-tables)).
+3. Set `tgt_dir` to the desired path for storing the results. Here, this is set to `./macrodna_res_log_rna_stability/`.
+
+The codes stores the outputs in the `tgt_dir` which will be used for measuring the accuracy in the following
+
+### Accuracy measurement and bar plots of the results 
+The script named `plot_dists_patient_label_retrieval.py` calculates and prints out the accuracy of all BE biopsies in this experiment and draws the bar plots representing the distributions of the cell assignments across all biopsies. To run this code:
+
+1. Set `dna_src_dir` to the path to the directory containing the filtered (from the section [Filtering on the scDNA-seq read count tables](https://github.com/NakhlehLab/MaCroDNA/tree/main/BE_data_analysis#filtering-on-the-scdna-seq-read-count-tables)).
+2. Set `res_path` to the output file from `macrodna_patient_label_retrieval.py` that contains the cell assignment information. We set the name of this file to `cross_cells_cell2cell_assignment_indexed.csv"` and can be found in the `tgt_dir` of `macrodna_patient_label_retrieval.py`.
 

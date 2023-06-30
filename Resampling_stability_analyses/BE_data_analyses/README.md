@@ -14,3 +14,6 @@ The script `random_assignment_test.py` performs this test. To run `random_assign
 Please note that, here, we assume the DNA data of each biopsy is a CSV file stored in the `dna_src_dir` named as `<biopsy name>_annotated_filtered_normed_count_table.csv`. Similarly, for the RNA data, all of them are stored in `rna_src_dir` as CSV files named `<biopsy name>__filtered_normed_count_table.csv`.
 
 The outputs of the above script consist of a dictionary containing the scores obtained from MaCroDNA on each biopsy, named `macrodna_objvals.pkl`, the MaCroDNA assignments of cells stored as `<biopsy name>_cell2cell_assignment_indexed.csv`, and all the random scores from the random trials for each biopsy saved as `<biopsy name>_random_samples.npy`. All these files can be found in the `tgt_dir`.
+
+### plotting the results of random assignments 
+The code named `plot_random_assignments.py` plots the histograms of the BE biopsies along with the red vertical line indicating the score obtained from MaCroDNA. To run this code, set `src_dir` to the path to the directory where the results of the random assignments are stored (`tgt_dir` in `random_assignment_test.py` code). 

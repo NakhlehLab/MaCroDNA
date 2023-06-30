@@ -17,3 +17,15 @@ The outputs of the above script consist of a dictionary containing the scores ob
 
 ### plotting the results of random assignments 
 The code named `plot_random_assignments.py` plots the histograms of the BE biopsies along with the red vertical line indicating the score obtained from MaCroDNA. To run this code, set `src_dir` to the path to the directory where the results of the random assignments are stored (`tgt_dir` in `random_assignment_test.py` code). 
+
+## Stability analysis of MaCroDNA's assignments for BE biopsies
+To measure the stability of scRNA-seq cells’ assignments in the BE biopsies, we designed a leave-one-out experiment that involved introducing a small perturbation into the input data by leaving out one of the scRNA-seq cells.
+Such perturbation in the RNA inputs might change the assignment of not only the left-out scRNA-seq cell but also the remaining scRNA-seq cells. Therefore, for each scRNA-seq cell, we aggregated the scDNA-seq cells’ IDs assigned to it across all the leave-one-out trials. Next, for each scRNA-seq cell, we collected the scDNA-seq cell IDs that were different from the assigned scDNA-seq cell ID when running MaCroDNA on the entire RNA data and defined the AII as the number of such different scDNA-seq cell IDs. The higher the AII, the more unstable and indefinitive the assignment of a scRNA-seq is in the presence of perturbation.
+
+
+
+
+
+
+
+

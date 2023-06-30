@@ -10,3 +10,5 @@ The script `random_assignment_test.py` performs this test. To run `random_assign
 1. Set `dna_src_dir` to the path to the directory containing the filtered (from the section [Filtering on the scDNA-seq read count tables](https://github.com/NakhlehLab/MaCroDNA/tree/main/BE_data_analysis#filtering-on-the-scdna-seq-read-count-tables)).
 2. Set `rna_src_dir` to the path to the directory containing the filtered gene expression data (from the section [Filtering on the scRNA-seq gene expression tables](https://github.com/NakhlehLab/MaCroDNA/blob/main/BE_data_analysis/README.md#filtering-on-the-scrna-seq-gene-expression-tables)).
 3. Set `tgt_dir` to the desired path for storing the results.
+
+Please note that, here, we assume the DNA data of each biopsy is a CSV file stored in the `dna_src_dir` named as `<biopsy name>_annotated_filtered_normed_count_table.csv`. Similarly, for the RNA data, all of them are stored in `rna_src_dir` as CSV files named `<biopsy name>__filtered_normed_count_table.csv`.

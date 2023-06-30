@@ -1,6 +1,6 @@
 # Resampling and stability analyses on Barretts' esophagus data set
 
-For all the following experiments, we prepared and preprocessed the DNA and RNA input data according to the instructions that we described in [Instructions for reproducing the results of our analysis on Barretts' esophagus data](https://github.com/NakhlehLab/MaCroDNA/tree/main/BE_data_analysis#instructions-for-reproducing-the-results-of-our-analysis-on-barretts-esophagus-data-set-originally-introduced-in).
+For all the following experiments, we prepared and preprocessed th DNA and RNA input data according to the instructions that we described in [Instructions for reproducing the results of our analysis on Barretts' esophagus data](https://github.com/NakhlehLab/MaCroDNA/tree/main/BE_data_analysis#instructions-for-reproducing-the-results-of-our-analysis-on-barretts-esophagus-data-set-originally-introduced-in).
 Here, we describe the experiments briefly and provide the instructions for running their corresponding codes.
 
 ## Random assignment test for BE biopsies

@@ -84,10 +84,9 @@ run_method <- function(dataDir,resultDir,patient_list,cluster_method,norm_method
           if (length(c_i_cell) == 1){
             dna_cnv[paste0("clone",c_i)] = c_i_cnv_all
           } else{
-            c_i_cnv_mean = apply(c_i_cnv_all,1,median)
-            # c_i_cnv_mean = rowMeans(c_i_cnv_all)
-            c_i_cnv_mean = round(c_i_cnv_mean, digits = 0)
-            dna_cnv[paste0("clone",c_i)] = c_i_cnv_mean
+            c_i_cnv_median = apply(c_i_cnv_all,1,median)
+            c_i_cnv_median = round(c_i_cnv_medium, digits = 0)
+            dna_cnv[paste0("clone",c_i)] = c_i_cnv_median
           }
         }
         

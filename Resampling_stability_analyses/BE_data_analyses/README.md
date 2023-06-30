@@ -1,10 +1,12 @@
 # Resampling and stability analyses on Barretts' esophagus data set
 
 For all the following experiments, we prepared and preprocessed the DNA and RNA input data according to the instructions that we described in [Instructions for reproducing the results of our analysis on Barretts' esophagus data](https://github.com/NakhlehLab/MaCroDNA/tree/main/BE_data_analysis#instructions-for-reproducing-the-results-of-our-analysis-on-barretts-esophagus-data-set-originally-introduced-in).
+Here, we describe the experiments briefly and provide the instructions for running their corresponding codes.
 
 ## Random assignment test for BE biopsies
-In this experiment, we randomly assigned the scRNA-seq cells to scDNA-seq cells in each biopsy. For each biopsy, we repeated the random assignment for 100 million times. 
-The script `random_assignment_test.py` performs this test. To `random_assignment_test.py`:
+The first experiment is the random assignment of scRNA-seq cells to scDNA-seq cells for each biopsy. For each biopsy, we repeated the random assignment for 100 million times to ensure we have enough number of samples. For each random assignment, we computed the sum of the Pearson correlation coefficients between the paired cells as the *score* of the random trial. Next, we compared the the scores obtained from radnom assignments with that of MaCroDNA's assignment and calculated the p-value of MaCroDNA assignment and plotted the figures.
+The script `random_assignment_test.py` performs this test. To run `random_assignment_test.py`:
 
 1. Set `dna_src_dir` to the path to the directory containing the filtered (from the section [Filtering on the scDNA-seq read count tables](https://github.com/NakhlehLab/MaCroDNA/tree/main/BE_data_analysis#filtering-on-the-scdna-seq-read-count-tables)).
 2. Set `rna_src_dir` to the path to the directory containing the filtered gene expression data (from the section [Filtering on the scRNA-seq gene expression tables](https://github.com/NakhlehLab/MaCroDNA/blob/main/BE_data_analysis/README.md#filtering-on-the-scrna-seq-gene-expression-tables)).
+3. Set `tgt_dir` to the desired path for storing the results.

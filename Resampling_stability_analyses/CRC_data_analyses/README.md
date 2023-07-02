@@ -42,6 +42,8 @@ The script `clonal_proportions_resampling.py` performs the above experiment. To 
 
 After running the code, for each clustering setting and each patient, it creates a directory in the `mother_dir` with the format of `prop_exp_res_<clustering setting>_<patient ID>`. Inside each subdirectory, a CSV file named `dat.csv` can be found that contains the accuracy of the assignments of the RNA cells (for which we know the true DNA pairs) along with the randomly drawn clonal proportions. Also, you can find the all DNA cell IDs present in each clone in another subdirectory named `names` in the same directory.
 
+The sample outputs of this code for 10 trials on all CRC patients and clustering settings can be found in the directory [all_props_exp_res](https://github.com/NakhlehLab/MaCroDNA/tree/main/Resampling_stability_analyses/CRC_data_analyses/sample_outputs/all_props_exp_res).
+
 #### Visualizing the accuracy measurements the clonal proportions' resamplign experiment
 
 The script `violin_plots_clonal_props_resampling.py` plots the violin plots of the accuracy measurements for each clustering setting separately. To run this code, set `src_dir` to the same path for `mother_dir` in `clonal_proportions_resampling.py`.

@@ -9,7 +9,7 @@ In this experiment, for each CRC patient, we performed the following test:
 1. From the scDNA-seq cells whose joint RNA information is available, randomly select 10 cells and remove them from the original DNA data.
 2. Run MaCroDNA on the new data set and measure the accuracy of clonal assignments only for the scRNA-seq cells whose actual scDNA-seq pairs were removed from the DNA data in the previous step.
 
-We repeated the above test 10,000 times on the preprocessed CRC data named all_genes_log with different clustering settings. For the details on how to prepare the all_genes_log data, see the Jupyter notebook [macrodna_analysis.ipynb](https://github.com/NakhlehLab/MaCroDNA/blob/main/CRC_data_analysis/macrodna_analysis.ipynb). We also have provided the details for obtaining the results of different clustering algorithms in a Jupyter notebook [clone_generation.ipynb](https://github.com/NakhlehLab/MaCroDNA/blob/main/CRC_data_analysis/clone_generation.ipynb).
+We repeated the above test 10,000 times on the preprocessed CRC data named all_genes_log with different clustering settings. For the details on how to prepare the all_genes_log data, see the Jupyter notebook [macrodna_analysis.ipynb](https://github.com/NakhlehLab/MaCroDNA/blob/main/CRC_data_analysis/macrodna_analysis.ipynb). We also have provided the details for obtaining the results of different clustering algorithms in the Jupyter notebook [clone_generation.ipynb](https://github.com/NakhlehLab/MaCroDNA/blob/main/CRC_data_analysis/clone_generation.ipynb).
 
 The script named `run_dna_batch_removal_exp.py` performs the above experiment on all CRC patients. To run this code:
 

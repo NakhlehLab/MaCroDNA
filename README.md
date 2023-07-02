@@ -13,8 +13,6 @@ Department of Computer Science, Rice University
 
 [4. Usage](#Usage)
 
-[5. Analysis](#Analysis)
-
 [5. Contacts](#contacts)
 
 
@@ -202,9 +200,6 @@ The output `cell2clone` is also a dataframe.
 The index ids are the RNA cell ids. 
 It has two columns. One is "predict_cell", which is the corresponding DNA cell for that RNA cell.
 The other column is "predict_clone", which is the predict clone id for that RNA cell.
-
-### Analysis
-The comparison between MaCroDNA and other methods can be found in `analysis/Analysis.ipynb`
 
 ### Contacts
 If you have any questions, please contact us via edrisi@rice.edu or xiru.huang@rice.edu

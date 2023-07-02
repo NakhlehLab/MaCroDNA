@@ -2,7 +2,9 @@ import pandas as pd
 import numpy as np 
 import os
 import scipy
-from scipy import stats
+import scipy.stats
+from scipy.stats import spearmanr
+from scipy.stats import pearsonr
 from scipy.stats import wasserstein_distance
 import sklearn
 from sklearn.linear_model import LinearRegression
@@ -50,19 +52,20 @@ if __name__=="__main__":
 			reg = LinearRegression().fit(X, y)
 
 			# spearman correlation
-			res = stats.spearmanr(dists, accs)
+			res = spearmanr(dists, accs)
+			print(res)
 			# pearson correlation
-			res_pearson = stats.pearsonr(dists, accs)
+			res_pearson = pearsonr(dists, accs)
 			# rank the data 
 			df_ranked = df_.rank()
 
 			plt.cla()
 			plt.clf()
 			g = sns.scatterplot(data = df_, x="Distance", y="Accuracy", s = 10, linewidth=0.0)
-			g.set(title = f"{setting}\n {res.statistic:.3f}\n{res.pvalue:.3e}")
+			g.set(title = f"{setting}\n {res.correlation:.3f}\n{res.pvalue:.3e}")
 			g.set_ylim(-0.05, 1.05)
 			plt.tight_layout()
-			plt.savefig(f"./props_exp_emd_vs_acc_{setting}_{option}_{patient_biop}.pdf")
+			plt.savefig(f"./props_exp_emd_vs_acc_{setting}_{patient_biop}.pdf")
 
 
 

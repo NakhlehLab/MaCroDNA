@@ -52,10 +52,9 @@ get_data <- function(p,c_method,c_norm,c_num){
     if (length(c_i_cell) == 1){
       dna_cnv[paste0("clone",c_i)] = c_i_cnv_all
     } else{
-      c_i_cnv_mean = apply(c_i_cnv_all,1,median)
-      # c_i_cnv_mean = rowMeans(c_i_cnv_all)
-      c_i_cnv_mean = round(c_i_cnv_mean, digits = 0)
-      dna_cnv[paste0("clone",c_i)] = c_i_cnv_mean
+      c_i_cnv_median = apply(c_i_cnv_all,1,median)
+      c_i_cnv_median = round(c_i_cnv_median, digits = 0)
+      dna_cnv[paste0("clone",c_i)] = c_i_cnv_median
     }
   }
   
@@ -116,7 +115,7 @@ crc10_data = get_data("crc10",cluster_method,norm_method,cluster_num)
 crc11_data = get_data("crc11",cluster_method,norm_method,cluster_num)
 
 ############################
-# original
+# exp0
 ############################
 exp0 <- function(p_data,p_name){
   new_dna = p_data$dna
@@ -134,7 +133,7 @@ crc11_exp0 = exp0(crc11_data,"crc11")
 
 
 ############################
-# original: rm 
+# exp0: rm copy-number-2 clone
 ############################
 exp0_rm <- function(p_data,p_name){
   new_dna = cnv_rm_exit_0(p_data$dna)

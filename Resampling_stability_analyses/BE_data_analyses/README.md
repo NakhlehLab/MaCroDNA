@@ -1,6 +1,6 @@
 # Resampling and stability analyses on Barretts' esophagus data set
 
-For all the following experiments, we prepared and preprocessed the DNA and RNA input data according to the instructions that we described in [Instructions for reproducing the results of our analysis on Barretts' esophagus data](https://github.com/NakhlehLab/MaCroDNA/tree/main/BE_data_analysis#instructions-for-reproducing-the-results-of-our-analysis-on-barretts-esophagus-data-set-originally-introduced-in).
+For all the following experiments, we prepared and preprocessed the DNA and RNA input data according to the instructions that we described in [Instructions for reproducing the results of our analysis on Barretts' esophagus data]https://github.com/NakhlehLab/MaCroDNA/tree/main/BE_data_analysis#instructions-for-reproducing-the-results-of-our-analysis-on-barretts-esophagus-data-set-originally-introduced-in).
 Here, we describe the experiments briefly and provide the instructions for running their corresponding codes.
 
 ## Random assignment test for BE biopsies
@@ -14,6 +14,8 @@ The script `random_assignment_test.py` performs this test. To run `random_assign
 Please note that, here, we assume the DNA data of each biopsy is a CSV file stored in the `dna_src_dir` named as `<biopsy name>_annotated_filtered_normed_count_table.csv`. Similarly, for the RNA data, all of them are stored in `rna_src_dir` as CSV files named `<biopsy name>__filtered_normed_count_table.csv`.
 
 The outputs of the above script consist of a dictionary containing the scores obtained from MaCroDNA on each biopsy, named `macrodna_objvals.pkl`, the MaCroDNA assignments of cells stored as `<biopsy name>_cell2cell_assignment_indexed.csv`, and all the random scores from the random trials for each biopsy saved as `<biopsy name>_random_samples.npy`. All these files can be found in the `tgt_dir`.
+
+The sample outputs of this code for 100 random trials for each BE biopsy can be found in the directory [macrodna_res_log_random_test](https://github.com/NakhlehLab/MaCroDNA/tree/main/Resampling_stability_analyses/BE_data_analyses/sample_outputs/macrodna_res_log_random_test).
 
 ### plotting the results of random assignments 
 The code named `plot_random_assignments.py` plots the histograms of the BE biopsies along with the red vertical line indicating the score obtained from MaCroDNA. To run this code, set `src_dir` to the path to the directory where the results of the random assignments are stored (`tgt_dir` in `random_assignment_test.py` code). 
@@ -29,6 +31,8 @@ The script named `run_loo_experiment.py` performs the leave-one-out trials on al
 3. Set `tgt_dir` to the desired path for storing the results. Here, this is set to `./macrodna_res_log_rna_stability/`.
 
 The names of the input CSV files are assumed to follow the same format as in the experiment [Random assignment test for BE biopsies](https://github.com/NakhlehLab/MaCroDNA/blob/main/Resampling_stability_analyses/BE_data_analyses/README.md#random-assignment-test-for-be-biopsies).
+
+The sample outputs of this code for one of the BE biopsies (named PAT6_LGD) can be found in the directory [macrodna_res_log_rna_stability](https://github.com/NakhlehLab/MaCroDNA/tree/main/Resampling_stability_analyses/BE_data_analyses/sample_outputs/macrodna_res_log_rna_stability).
 
 ### Visualizing the box plots of the assignment instability indices 
 The script named `box_plots_from_loo_errors.py` draws the box plots showing the range of values for the assignment instability indices across all scRNA-seq cells for each biopsy. To run this code, set the variables `dna_src_dir` and `rna_src_dir` as for `run_loo_experiment.py` and set `src_dir` to the same path for `tgt_dir` in `run_loo_experiment.py`. The output is a figure named `diversity_idx_boxplots.pdf`.
@@ -46,7 +50,8 @@ The script named `macrodna_patient_label_retrieval.py` pools all the cells from 
 2. Set `rna_src_dir` to the path to the directory containing the filtered gene expression data (from the section [Filtering on the scRNA-seq gene expression tables](https://github.com/NakhlehLab/MaCroDNA/blob/main/BE_data_analysis/README.md#filtering-on-the-scrna-seq-gene-expression-tables)).
 3. Set `tgt_dir` to the desired path for storing the results. Here, this is set to `./macrodna_res_log_rna_stability/`.
 
-The codes stores the outputs in the `tgt_dir` which will be used for measuring the accuracy in the following
+The codes stores the outputs in the `tgt_dir` which will be used for measuring the accuracy in the following. 
+The sample outputs of this code on all BE biopsies can be found in the directory [macrodna_res_log_cross_cells](https://github.com/NakhlehLab/MaCroDNA/tree/main/Resampling_stability_analyses/BE_data_analyses/sample_outputs/macrodna_res_log_cross_cells).
 
 ### Accuracy measurement and bar plots of the results 
 The script named `plot_dists_patient_label_retrieval.py` calculates and prints out the accuracy of all BE biopsies in this experiment and draws the bar plots representing the distributions of the cell assignments across all biopsies. To run this code:

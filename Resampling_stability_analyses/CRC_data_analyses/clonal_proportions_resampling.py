@@ -14,7 +14,6 @@ import multiprocessing
 import time
 import random
 
-
 class MaCroDNA:
     def __init__(self, rna_df=None, dna_df=None, dna_label=None):
         # INPUT
@@ -119,7 +118,7 @@ class MaCroDNA:
         # calculate the number of steps
         quotient, remainder = divmod(global_rna_idx.shape[0],
                                      global_dna_idx.shape[0])
-
+        
         n_iters = int(quotient)
         if remainder != 0:
             n_iters += 1
@@ -145,9 +144,9 @@ class MaCroDNA:
             rna_idx = np.delete(global_rna_idx,
                                 idx_remove)  # the rna cells whose correspondence was found in the previous step are removed from the batch
 
+
         result_df = pd.DataFrame(data=global_correspondence, columns=dna_cells, index=rna_cells)
         tagged_df = pd.DataFrame(data=tagged_correspondence, columns=dna_cells, index=rna_cells)
-
 
         # change the format of the tagged correspondence matrix similar to the binary correspondence matrix
         result_rna_tagged = []
@@ -169,39 +168,41 @@ class MaCroDNA:
 
         return tmp_result_tagged
 
-def func(rand_seed, dna, rna, K, joint_cells, clus):
+def func(rand_num, m_p, n_p, s_p, dna, rna, clonal_dfs, clus, names_dir):
 
-    # ========= set the seed =========
-    random.seed(rand_seed)
+    # ========= set the seeds =========
+    np.random.seed(rand_num)
 
-    # ========= copy the inputs =========
-    dna_copy = dna.copy()
-    rna_copy = rna.copy()
+    # ========= draw new proportions =========
+    new_props = np.random.multinomial(m_p, np.random.dirichlet(np.ones(n_p) * s_p))
 
-    # ========= select the dna cells to drop =========
-    assert K < len(joint_cells), "sample size should be less than the number of cells with joint DNA and RNA"
-    to_drop = random.sample(joint_cells, K)
-    # to_drop = joint_cells
-    dna_copy.drop(to_drop, axis=1, inplace=True)
+    # ========= check the sum of proportions =========
+    assert sum(new_props) == dna.shape[1], \
+    'sum of the randomly drawn clonal proportions is not equal to the total number of DNA cells'
 
-    # ========= call macrodna on the new data =========
-    model_dat = MaCroDNA(rna_copy, dna_copy)
-    df_macrodna_res_dropped = model_dat.cell2cell_assignment()
+    # ========= aggregate the sampled names =========
+    new_dna_names = pd.concat([clonal_dfs[i]['cell'].sample(n = prop, replace=True, random_state = rand_num) for i, prop in enumerate(new_props)], 
+        ignore_index = True)
 
-    # ========= measure the accuracy from the new and original data on the dropped cells ==========
-    merged_dropped_df = df_macrodna_res_dropped.merge(clus, left_on = 'rna_cell',
+    new_dna = dna.loc[:,new_dna_names]
+
+    model_dat = MaCroDNA(rna, new_dna)
+    df_macrodna_res = model_dat.cell2cell_assignment()
+    merged_df = df_macrodna_res.merge(clus, left_on = 'rna_cell', 
         right_on = 'cell', how = 'inner', validate = "many_to_one")
-    merged_dropped_df.rename(columns = {'clone': 'rna_clone'}, inplace=True)
-    merged_dropped_df = merged_dropped_df.merge(clus, left_on = 'predicted_dna_cell',
+    merged_df.rename(columns = {'clone': 'rna_clone'}, inplace=True)
+    merged_df = merged_df.merge(clus, left_on = 'predicted_dna_cell',
         right_on = 'cell', how='inner', validate = "many_to_one")
-    merged_dropped_df.rename(columns = {'clone': 'dna_clone'}, inplace=True)
-    assert merged_dropped_df.shape[0] == len(joint_cells),\
-    "mismatch between the merged data frame and list of cells with joint DNA and RNA"
+    merged_df.rename(columns = {'clone': 'dna_clone'}, inplace=True)
+    if merged_df.shape[0] == 0:
+        acc = nan
+    else:
+        acc = merged_df.query("dna_clone == rna_clone").shape[0]/merged_df.shape[0]
+    print(f"accuracy on the sampled dna data set and original rna data: {acc}")
 
-    acc = merged_df.query("dna_clone == rna_clone & rna_cell in @to_drop").shape[0]/merged_df.query("rna_cell in @to_drop").shape[0]
-    acc_dropped = merged_dropped_df.query("dna_clone == rna_clone & rna_cell in @to_drop").shape[0]/merged_dropped_df.query("rna_cell in @to_drop").shape[0]
+    pd.DataFrame({'cell_ID': new_dna.columns.tolist()}).to_csv(os.path.join(names_dir, f"resampled_dna_{rand_num}.csv"))
 
-    return (acc, acc_dropped)
+    return (new_props, acc)
 
 
 if __name__ == "__main__":
@@ -214,7 +215,7 @@ if __name__ == "__main__":
     biop_sample = ["crc04", "crc10", "crc11"]
     clustering_settings = ["agglomerative_log", "agglomerative_raw", "intNMF_log", "intNMF_raw"]
 
-    mother_dir = "./all_dna_removal_exp/"
+    mother_dir = "./all_props_exp_res/"
     clus_path = "./Clusters/"
 
     if not os.path.isdir(mother_dir):
@@ -242,68 +243,82 @@ if __name__ == "__main__":
             assert set(dna.columns.to_list()) == set(clus['cell'].values.tolist()),\
             "some cell names are missing in either copy number data or in the cluster assignment data frame"
 
-            # ========= cells with joint dna and rna =========
-            joint_cells = list(set(dna.columns.tolist()).intersection(set(rna.columns.tolist())))
-            print(f"number of cells with joint DNA and RNA in the current patient {len(joint_cells)}")
-
             # ========= path handle =========
-            tgt_dir = f"dna_removal_exp_res_{clustering_setting}_{d}/"
+            tgt_dir = f"props_exp_res_{clustering_setting}_{d}/"
             tgt_dir = os.path.join(mother_dir, tgt_dir)
+            names_dir = os.path.join(tgt_dir, 'names')
 
             if not os.path.isdir(tgt_dir):
                 os.mkdir(tgt_dir)
 
+            if not os.path.isdir(names_dir):
+                os.mkdir(names_dir)
+
+            # ========= group the cells by their clones =========
+            clonal_ids, clonal_dfs = list(zip(*clus.groupby(['clone'])))
+
+            # ========= create the columns of the stats data frame =========
+            cols = ['dat_type', 'accuracy'] + [f"clone_{clone_id}" for clone_id in clonal_ids]
+            dat_dict = {c : [] for c in cols}
+
+
             # ========= call macrodna on the original data =========
             model_orig_dat = MaCroDNA(rna, dna)
             df_macrodna_res = model_orig_dat.cell2cell_assignment()
-
             merged_df = df_macrodna_res.merge(clus, left_on = 'rna_cell', 
                 right_on = 'cell', how = 'inner', validate = "many_to_one")
             merged_df.rename(columns = {'clone': 'rna_clone'}, inplace=True)
             merged_df = merged_df.merge(clus, left_on = 'predicted_dna_cell',
                 right_on = 'cell', how='inner', validate = "many_to_one")
             merged_df.rename(columns = {'clone': 'dna_clone'}, inplace=True)
-            assert merged_df.shape[0] == len(joint_cells),\
-            "mismatch between the merged data frame and list of cells with joint DNA and RNA"
-            # acc = merged_df.query("dna_clone == rna_clone").shape[0]/merged_df.shape[0]
+            if merged_df.shape[0] == 0:
+                acc = nan
+            else:
+                acc = merged_df.query("dna_clone == rna_clone").shape[0]/merged_df.shape[0]
+            print(f"accuracy on the original data set: {acc}")
 
-            # ========= create the table =========
-            cols = ['original_acc', 'dropped_acc']
-            dat_dict = {c : [] for c in cols}
+            # ========= fill out the table ==========
+            dat_dict['dat_type'].append('original')
+            dat_dict['accuracy'].append(acc)
+            for i, clone_id in enumerate(clonal_ids): dat_dict[f"clone_{clone_id}"].append(clonal_dfs[i].shape[0])
 
-            # ========= number of replicates for the current patient =========
+
+            # save the names of the cells into csv files in names_dir
+            pd.DataFrame({'cell_ID': dna.columns.tolist()}).to_csv(os.path.join(names_dir, 'original_dna.csv'))
+            pd.DataFrame({'cell_ID': rna.columns.tolist()}).to_csv(os.path.join(names_dir, 'original_rna.csv'))
+
+
+            # ========= resampling on the dna cells =========
+            s_p = 1.0
+            n_p = len(clonal_dfs)
+            m_p = dna.shape[1]
+
+            # ========= number of replicates for the current biopsy =========
             N = 10000
             # ========= number of processes in the pool =========
-            P = 70
-            # ========= size of the to-drop batch =========
-            K_ = 10
+            P = 20
 
             pool = multiprocessing.Pool(P)
             start_time = time.perf_counter()
             processes = [pool.apply_async(func,
-                args = (rand_num, dna, rna, K_, joint_cells, clus)) for rand_num in range(N)]
+                args = (k, m_p, n_p, s_p, dna, rna, clonal_dfs, clus, names_dir)) for k in range(N)]
             returns = [p.get() for p in processes]
             pool.close()
             pool.join()
             finish_time = time.perf_counter()
             print(f"{N} random replicates for patient {d} were processed in {finish_time-start_time} seconds")
 
-            # ========= fill out the table =========
+
+            # returned = func(0, m_p, n_p, s_p, dna, rna, clonal_dfs, option, clus, names_dir)
             for returned in returns:
-                dat_dict['original_acc'].append(returned[0])
-                dat_dict['dropped_acc'].append(returned[1])
+                # ========= fill out the table with the sampled data =========
+                dat_dict['dat_type'].append('resampled')
+                dat_dict['accuracy'].append(returned[1])
+                for i, clone_id in enumerate(clonal_ids): dat_dict[f"clone_{clone_id}"].append(returned[0][i])
 
             # create the data frame of all results 
             df = pd.DataFrame.from_dict(dat_dict)
             df.to_csv(os.path.join(tgt_dir, 'dat.csv'))
-
-
-
-
-
-
-
-
 
 
 

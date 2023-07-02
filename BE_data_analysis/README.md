@@ -1,4 +1,4 @@
-# Instructions for reproducing the results of our analysis on Barretts' esophagus data set originally introduced in:
+# Instructions for reproducing the results of our analysis on Barrett's esophagus data set originally introduced in:
 
 > Busslinger, Georg A., et al. "Molecular characterization of Barrett’s esophagus at single-cell resolution." Proceedings of the National Academy of Sciences 118.47 (2021): e2113061118.
 

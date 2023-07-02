@@ -15,6 +15,7 @@ import multiprocessing
 import time
 
 
+
 class MaCroDNA:
     def __init__(self, rna_df=None, dna_df=None, dna_label=None):
         # INPUT

@@ -184,11 +184,11 @@ if __name__ == "__main__":
 	x = (x - x.mean())/x.std()
 	y = (y - y.mean())/y.mean()
 	res = stats.spearmanr(x, y)
-	print(res.statistic)
+	print(res.correlation)
 	print(res.pvalue)
 	# pearson correlation
 	res_pearson = stats.pearsonr(x, y)
-	print(res_pearson.statistic)
+	print(res_pearson.correlation)
 	print(res_pearson.pvalue)
 
 	X = x.reshape(-1,1)

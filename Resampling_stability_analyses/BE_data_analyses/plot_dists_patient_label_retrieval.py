@@ -38,7 +38,7 @@ def calculate_pdist(dna_src_dir, sample):
 if __name__=="__main__":
 	biop_sample = ["PAT20_CARD", "PAT20_ESO", "PAT9_NDBE", "PAT14_NDBE", "PAT16_NDBE", "PAT6_LGD", "PAT19_LGD", "PAT6_HGD", "PAT14_HGD", "PAT20_HGD1", "PAT16_EAC"]
 	dna_src_dir = "./annotated_scDNAseq_filtered_cells_pseudocount_copynumber_log"
-	res_path = "./cross_cells_cell2cell_assignment_indexed.csv"
+	res_path = "./macrodna_res_log_cross_cells/cross_cells_cell2cell_assignment_indexed.csv"
 	biop_names = [x.replace("_","(")+")" for x in biop_sample]
 	df = pd.read_csv(res_path, header=0)
 	print(df.head())

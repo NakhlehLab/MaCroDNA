@@ -175,11 +175,11 @@ if __name__ == "__main__":
 	x = np.array(x)
 	y = np.array(y)
 	res = stats.spearmanr(x, y)
-	print(res.statistic)
+	print(res.correlation)
 	print(res.pvalue)
 	# pearson correlation
 	res_pearson = stats.pearsonr(x, y)
-	print(res_pearson.statistic)
+	print(res_pearson.correlation)
 	print(res_pearson.pvalue)
 
 	X = x.reshape(-1,1)
@@ -191,7 +191,7 @@ if __name__ == "__main__":
 	df_ = pd.DataFrame({'heterogeneity': x, 'max count': y, 'sample': biop_sample})
 	g = sns.lmplot(x="heterogeneity", y="max count", data=df_, fit_reg=True)
 	label_point(df_['heterogeneity'], df_['max count'], df_['sample'], plt.gca())
-	g.set(title = f"pearson: {res_pearson.statistic:.3f}, {res_pearson.pvalue:.3f}\nspearman: {res.statistic:.3f}, {res.pvalue:.3f}")
+	g.set(title = f"pearson: {res_pearson.correlation:.3f}, {res_pearson.pvalue:.3f}\nspearman: {res.correlation:.3f}, {res.pvalue:.3f}")
 	plt.tight_layout()
 
 	plt.savefig(os.path.join("./","max_assign_instability_index_ITH.pdf")

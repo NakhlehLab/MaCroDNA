@@ -8,6 +8,7 @@ import os
 import pickle
 
 
+
 if __name__=="__main__":
 	biop_sample = ["PAT20_CARD", "PAT20_ESO", "PAT9_NDBE", "PAT14_NDBE", "PAT16_NDBE", "PAT6_LGD", "PAT19_LGD", "PAT6_HGD", "PAT14_HGD", "PAT20_HGD1", "PAT16_EAC"]
 	src_dir = "./macrodna_res_log_random_test"

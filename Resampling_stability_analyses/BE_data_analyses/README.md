@@ -4,7 +4,7 @@ For all the following experiments, we prepared and preprocessed the DNA and RNA 
 Here, we describe the experiments briefly and provide the instructions for running their corresponding codes.
 
 ## Random assignment test for BE biopsies
-The first experiment is the random assignment of scRNA-seq cells to scDNA-seq cells for each biopsy. For each biopsy, we repeated the random assignment for 100 million times to ensure we have enough number of samples. For each random assignment, we computed the sum of the Pearson correlation coefficients between the paired cells as the *score* of the random trial. Next, we compared the the scores obtained from radnom assignments with that of MaCroDNA's assignment and calculated the p-value of MaCroDNA assignment and plotted the figures.
+The first experiment is the random assignment of scRNA-seq cells to scDNA-seq cells for each biopsy. For each biopsy, we repeated the random assignment for 100 million times to ensure we had enough number of samples. For each random assignment, we computed the sum of the Pearson correlation coefficients between the paired cells as the *score* of the random trial. Next, we compared the scores obtained from random assignments with that of MaCroDNA's assignment, calculated the p-value of the MaCroDNA assignment, and plotted the figures.
 The script `random_assignment_test.py` performs this test. To run `random_assignment_test.py`:
 
 1. Set `dna_src_dir` to the path to the directory containing the filtered (from the section [Filtering on the scDNA-seq read count tables](https://github.com/NakhlehLab/MaCroDNA/tree/main/BE_data_analysis#filtering-on-the-scdna-seq-read-count-tables)).
@@ -17,11 +17,11 @@ The outputs of the above script consist of a dictionary containing the scores ob
 
 The sample outputs of this code for 100 random trials for each BE biopsy can be found in the directory [macrodna_res_log_random_test](https://github.com/NakhlehLab/MaCroDNA/tree/main/Resampling_stability_analyses/BE_data_analyses/sample_outputs/macrodna_res_log_random_test).
 
-### plotting the results of random assignments 
-The code named `plot_random_assignments.py` plots the histograms of the BE biopsies along with the red vertical line indicating the score obtained from MaCroDNA. To run this code, set `src_dir` to the path to the directory where the results of the random assignments are stored (`tgt_dir` in `random_assignment_test.py` code). 
+### Plotting the results of random assignments 
+The code, named `plot_random_assignments.py` plots the histograms of the BE biopsies along with the red vertical line indicating the score obtained from MaCroDNA. To run this code, set `src_dir` to the path to the directory where the results of the random assignments are stored (`tgt_dir` in the `random_assignment_test.py` code). 
 
 ### Correlation between the two scoring metrics for random assignments (sum of Pearson correlation values vs. median of Pearson correlation values)
-To account for the outliers that may affect the sum of Pearson correlation values as a score, we additionally measured the median of Pearson correlation values and compared the results of the two experiments. The code named `random_assignment_test_meidan.py` replicates the same random trials (using the same random seeds) and stores the median of Pearson correlations. The code and outputs are the same as for `random_assignment_test.py` (except for the added suffix of _median_). 
+To account for the outliers that may affect the sum of Pearson correlation values as a score, we additionally measured the median of Pearson correlation values and compared the results of the two experiments. The code, named `random_assignment_test_meidan.py` replicates the same random trials (using the same random seeds) and stores the median of Pearson correlations. The code and outputs are the same as for `random_assignment_test.py` (except for the added suffix of _median_). 
 
 ## Stability analysis of MaCroDNA's assignments for BE biopsies
 To measure the stability of scRNA-seq cells’ assignments in the BE biopsies, we designed a leave-one-out experiment that involved introducing a small perturbation into the input data by leaving out one of the scRNA-seq cells.
@@ -53,7 +53,7 @@ The script named `macrodna_patient_label_retrieval.py` pools all the cells from 
 2. Set `rna_src_dir` to the path to the directory containing the filtered gene expression data (from the section [Filtering on the scRNA-seq gene expression tables](https://github.com/NakhlehLab/MaCroDNA/blob/main/BE_data_analysis/README.md#filtering-on-the-scrna-seq-gene-expression-tables)).
 3. Set `tgt_dir` to the desired path for storing the results. Here, this is set to `./macrodna_res_log_rna_stability/`.
 
-The codes stores the outputs in the `tgt_dir` which will be used for measuring the accuracy in the following. 
+The code stores the outputs in the `tgt_dir` which will be used for measuring the accuracy in the following. 
 The sample outputs of this code on all BE biopsies can be found in the directory [macrodna_res_log_cross_cells](https://github.com/NakhlehLab/MaCroDNA/tree/main/Resampling_stability_analyses/BE_data_analyses/sample_outputs/macrodna_res_log_cross_cells).
 
 ### Accuracy measurement and bar plots of the results 

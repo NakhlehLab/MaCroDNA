@@ -5,12 +5,12 @@
 
 ## Download and prepare the data set
 
-All the data sets from this study are available at European Genome-Phenome Archive (https://ega-archive.org) and can be accessed by the accession number EGAS00001005221
+All the data sets from this study are available at the European Genome-Phenome Archive (https://ega-archive.org) and can be accessed by the accession number EGAS00001005221
 The accession number for the single-cell DNA sequencing data is EGAD00001007521 and the accession number of the single-cell RNA sequencing data is EGAD00001007523
-To map the reads of the scDNA-seq data to the human reference genome use the NIaIII mapping pipeline of SingleCellMultiOmics package: https://github.com/BuysDB/SingleCellMultiOmics/tree/master/singlecellmultiomics/snakemake_workflows/nlaIII
+To map the reads of the scDNA-seq data to the human reference genome using the NIaIII mapping pipeline of the SingleCellMultiOmics package: https://github.com/BuysDB/SingleCellMultiOmics/tree/master/singlecellmultiomics/snakemake_workflows/nlaIII
 The reads of the scRNA-seq data were mapped to the human genome using the SingleCellMultiOmics pipeline:
 https://github.com/BuysDB/SingleCellMultiOmics/tree/master/singlecellmultiomics/snakemake_workflows/cs2_scmo
-From the outputs of these pipelines we use the read count tables and gene expression tables of the scDNA-seq and scRNA-seq data, respectively.
+From the outputs of these pipelines, we use the read count tables and gene expression tables of the scDNA-seq and scRNA-seq data, respectively.
 
 
 ## Installing the required packages
@@ -38,40 +38,40 @@ After installation of Gurobi optimizer, `gurobipy` can be installed using `pip`:
 Install phylosignal using the command:
 `devtools::install_github("fkeck/phylosignal")`
 
-Install phangorn R package for phylogenetic inference and the dependencies:
+Install the phangorn R package for phylogenetic inference and the dependencies:
 ```
 install.packages("phangorn")
 install.packages("ape")
 install.packages(“phylobase”)
-install.packages(“”adephylo)
+install. packages(“adephylo")
 ```
 
 
 ## Filtering on the scDNA-seq read count tables
 
-For each biopsy, we have a read count table where the columns are the cell ID’s and the rows match the number of mapped reads in genomic bins with size of 250,000 base pairs. We filtered and normalized the DNA data using the script named cna_filterer.py which reads each read count table, removes the low-quality cells with less than 3000 coverage, adds pseudo count of 1 to all values, estimates the rough copy number values by multiplying the counts by 2 and dividing by the median for each cell, and finally performs log1p normalization.
+For each biopsy, we have a read count table where the columns are the cell ID’s, and the rows match the number of mapped reads in genomic bins with the size of 250,000 base pairs. We filtered and normalized the DNA data using the script named cna_filterer.py which reads each read count table, removes the low-quality cells with less than 3000 coverage, adds a pseudo count of 1 to all values, estimates the rough copy number values by multiplying the counts by 2 and dividing by the median for each cell, and finally performs log1p normalization.
 To run `cna_filterer.py`:
 
 1. Change the path to the source directory containing the original read count tables (`src_dir`)
 2. Change the path to the destination directory to store the filtered and normalized tables (`tgt_dir`)
 3. Run: `python cna_filterer.py`
 
-The code does not need any argument, and the complete list of biopsy names are provided in the code in a list. The results are saved in the `tgt_dir`. For each biopsy, there will be a filtered CSV file named with `<biopsy name>_filtered_normed_count_table.csv`
+The code does not need any argument, and the complete list of biopsy names is provided in the code in a list. The results are saved in the `tgt_dir`. For each biopsy, there will be a filtered CSV file named `<biopsy name>_filtered_normed_count_table.csv`
 
 ## Filtering on the scRNA-seq gene expression tables:
 
-For each biopsy, we have a gene expression table where the columns are the cell ID’s and the rows correspond the number of transcripts mapped to each gene. We filtered and normalized the RNA data using the script named `rna_filterer.py` which reads each gene expression table, removes the low-quality cells with total number of transcripts less than 3000, keeps the genes that are expressed in at least one cell with at least three transcripts, adds the pseudo count of 1 to all values, performs RPM normalization, and finally log1p normalization.
+For each biopsy, we have a gene expression table where the columns are the cell ID’s, and the rows correspond to the number of transcripts mapped to each gene. We filtered and normalized the RNA data using the script named `rna_filterer.py` which reads each gene expression table, removes the low-quality cells with a total number of transcripts less than 3000, keeps the genes that are expressed in at least one cell with at least three transcripts, adds the pseudo count of 1 to all values, performs RPM normalization, and finally log1p normalization.
 To run `rna_filterer.py`: 
 1. Change the path to the source directory containing the original gene expression tables (`src_dir`)
 2. Change the path to the destination directory to store the filtered and normalized tables (`tgt_dir`)
 3. Run: `python rna_filterer.py`
-The code does not need any argument, and the complete list of biopsy names are provided in the code in a list. The results are saved in the `tgt_dir`. For each biopsy, there will be a filtered CSV file named `<biopsy name>_filtered_normed_count_table.csv`
+The code does not need any argument, and the complete list of biopsy names is provided in the code in a list. The results are saved in the `tgt_dir`. For each biopsy, there will be a filtered CSV file named `<biopsy name>_filtered_normed_count_table.csv`
 
 
 ## Annotation of the scDNA-seq data
 
-Prior to running MaCroDNA on the scDNA-seq and scRNA-seq data, we annotated the genomic bins in the copy number data by the genes that lie within them. The gencode data was downloaded the GFF3 annotation file for GRCh37.p13 from https://www.gencodegenes.org/human/release_19.html. The GFF3 file is named `gencode.v19.annotation.gff3` in the current folder. The protein-coding genes were extracted from the gencode data following the commands in https://medium.com/intothegenomics/annotate-genes-and-genomic-coordinates-using-python-9259efa6ffc2 . The commands for extracting the protein-coding genes are written in `gencode_reader.py`
-In the python script, `gencode_reader.py` set the path to the GFF3 file (`gff_f`) and run:
+Prior to running MaCroDNA on the scDNA-seq and scRNA-seq data, we annotated the genomic bins in the copy number data by the genes that lie within them. The gencode data was downloaded (the GFF3 annotation file for GRCh37.p13) from https://www.gencodegenes.org/human/release_19.html. The GFF3 file is named `gencode.v19.annotation.gff3` in the current folder. The protein-coding genes were extracted from the gencode data following the commands in https://medium.com/intothegenomics/annotate-genes-and-genomic-coordinates-using-python-9259efa6ffc2 . The commands for extracting the protein-coding genes are written in `gencode_reader.py`
+In the Python script, `gencode_reader.py` set the path to the GFF3 file (`gff_f`) and run:
 
 `python gencode_reader.py`
 
@@ -88,12 +88,12 @@ The outputs are written in the `tgt_dir`. For each biopsy, the annotated file is
 ## Running MaCroDNA:
 
 
-The script for running MaCroDNA on the BE data set is provided in `macrodna_BE.py`. Before running this script, set the variables `dna_src_dir` and `rna_src_dir` to the source directory of the scDNA-seq and scRNA-seq data, respectively. Note, the scDNA-seq data used at this step are the annotated data from the previous steps. 
+The script for running MaCroDNA on the BE data set is provided in `macrodna_BE.py`. Before running this script, set the variables `dna_src_dir` and `rna_src_dir` to the source directory of the scDNA-seq and scRNA-seq data, respectively. Note, that the scDNA-seq data used at this step are the annotated data from the previous steps. 
 
 Run: 
 `python macrodna_BE.py`
 
-For each biopsy, the output can be found in the `tgt_dir` in a CSV file named as `<biopsy name>_cell2cell_assignment_indexed.csv`. This file contains the names of the paired cells from RNA and DNA, and also the MaCroDNA round that they were assigned to each other. 
+For each biopsy, the output can be found in the `tgt_dir` in a CSV file named `<biopsy name>_cell2cell_assignment_indexed.csv`. This file contains the names of the paired cells from RNA and DNA, and also the MaCroDNA round that they were assigned to each other. 
 
 
 ## Post-processing on MaCroDNA’s results for phylogenetic analysis
@@ -109,7 +109,7 @@ To run `aggregate_macrodna.py`:
 Run the following command:
 `python aggregate_macrodna.py` 
 
-The outputs are saved in `tgt_dir` directory. For each biopsy, the copy number profiles are saved into CSV files named as `<biopsy name>_dna.csv`, and the gene expression profiles of the paired cells are saved in CSV files named as `<biopsy name>_rna.csv`
+The outputs are saved in `tgt_dir` directory. For each biopsy, the copy number profiles are saved into CSV files named `<biopsy name>_dna.csv`, and the gene expression profiles of the paired cells are saved in CSV files named `<biopsy name>_rna.csv`
 
 
 ## Running phylosignal R package 

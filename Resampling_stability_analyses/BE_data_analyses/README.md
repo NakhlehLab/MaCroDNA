@@ -20,7 +20,8 @@ The sample outputs of this code for 100 random trials for each BE biopsy can be 
 ### plotting the results of random assignments 
 The code named `plot_random_assignments.py` plots the histograms of the BE biopsies along with the red vertical line indicating the score obtained from MaCroDNA. To run this code, set `src_dir` to the path to the directory where the results of the random assignments are stored (`tgt_dir` in `random_assignment_test.py` code). 
 
-### Correlation between sum and median of random assignments' scores
+### Correlation between the two scoring metrics for random assignments (sum of Pearson correlation values vs. median of Pearson correlation values)
+To account for the outliers that may affect the sum of Pearson correlation values as a score, we additionally measured the median of Pearson correlation values and compared the results of the two experiments. The code named `random_assignment_test_meidan.py` replicates the same random trials (using the same random seeds) and stores the median of Pearson correlations. The code and outputs are the same as for `random_assignment_test.py` (except for the added suffix of _median_). 
 
 ## Stability analysis of MaCroDNA's assignments for BE biopsies
 To measure the stability of scRNA-seq cells’ assignments in the BE biopsies, we designed a leave-one-out experiment that involved introducing a small perturbation into the input data by leaving out one of the scRNA-seq cells.

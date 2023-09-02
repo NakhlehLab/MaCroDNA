@@ -45,7 +45,7 @@ Here, only gurobipy need to be installed manually before installing MaCroDNA. Ot
 
 **gurobipy Installation**
 
-First, Gurobi need to be installed. The academic license is free. The installation instructions for
+First, Gurobi needs to be installed. The academic license is free. The installation instructions for
 Gurobi are
 
 | OS      | Instruction |
@@ -67,7 +67,7 @@ MaCroDNA is under the directory `src/MaCroDNA/macrodna.py`
 
 **Installation Test**
 
-You can test the installation using the following code in python
+You can test the installation using the following code in Python
 
 ````
 $ python
@@ -159,7 +159,7 @@ For more complicated test, you can use `test_macrodna.py` under `test/` director
 
 For mapping RNA cells to DNA cells, the input should be two dataframes `dna_df` and 
 `rna_df`. In these two dataframes, the row ids should be the genes and the column ids 
-should be the cells. The genes on RNA data and those in DNA data can be different, because MaCroDNA can select the same genes
+should be the cells. The genes in RNA data and those in DNA data can be different because MaCroDNA can select the same genes
  from the data by itself.
 
 To get the cell-to-cell mapping
@@ -177,13 +177,13 @@ And it only has on column "predict_cell", which is the DNA cell assigned to the 
 
 The second output `cell2cell_step` is also a dataframe.
 It has two columns "predict_cell" and "step". 
-"predict_cell" is same as that in `cell2cell`.
+"predict_cell" is the same as that in `cell2cell`.
 "step" indicates at which step this result is inferred. And the smaller the step number is, the more confident the result is.
 
 **cell-to-clone mapping**
 
 For mapping RNA cells to DNA clones, the input needs three dataframes `dna_df`,
-`rna_df` and `dna_label`. `dna_df` and `rna_df` are same as cell-to-cell mapping.
+`rna_df` and `dna_label`. `dna_df` and `rna_df` are the same as cell-to-cell mapping.
 `dna_label` has two columns "clone" and "cell", where "cell" is the DNA cells and "clone" is the corresponding clone id
 for that DNA cell.
 
@@ -199,7 +199,7 @@ $ python
 The output `cell2clone` is also a dataframe.
 The index ids are the RNA cell ids. 
 It has two columns. One is "predict_cell", which is the corresponding DNA cell for that RNA cell.
-The other column is "predict_clone", which is the predict clone id for that RNA cell.
+The other column is "predict_clone", which is the predicted clone id for that RNA cell.
 
 ### Contacts
 If you have any questions, please contact us via edrisi@rice.edu or xiru.huang@rice.edu

@@ -8,4 +8,4 @@ and the colorectal cancer data from:
 
 > Bian, Shuhui, et al. "Single-cell multiomics sequencing and analyses of human colorectal cancer." Science 362.6418 (2018): 1060-1063.
 
-The instructions and scripts for reproducing the results on the Barretts' esophagus data set are provided in the subdirectory [BE_data_analyses](./BE_data_analyses). To see the instructions and scripts for reproducing the results on the colorectal cancer data set, please visit the subdirectoy [CRC_data_analyses](./CRC_data_analyses).
+The instructions and scripts for reproducing the results on the Barretts' esophagus data set are provided in the subdirectory [BE_data_analyses](./BE_data_analyses). To see the instructions and scripts for reproducing the results on the colorectal cancer data set, please visit the subdirectory [CRC_data_analyses](./CRC_data_analyses).

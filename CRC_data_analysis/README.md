@@ -16,7 +16,7 @@ The repository is structured as follows:
 4. `clone_generation.ipynb`: a script explaining how clones were generated using the intNMF and agglomerative clustering methods on untransformed and log-transformed data. The expected generated clusters can be found in the ExpectedCluster/ directory.
 5. `ExpectedCluster/`: the expected clusters generated from  `clone_generation.ipynb`
 6. `macrodna.py` `seurat_process.R` `utils.py` `run_IntNMF.R`: The functions used in `macrodna_analysis.ipynb` and `clone_generation.ipynb`.
-6. `OtherIntegrationMethods/`: includes the scripts of Seurat, clonealign and baseline that we used in the paper
+6. `OtherIntegrationMethods/`: includes the scripts of Seurat, clonealign, and baseline that we used in the paper
 8. `clonealign_performance_analysis/`:  includes the script used to analyze the performance of CloneAlign, as mentioned in section 2 of the supplementary materials titled  **2 Analysis of clonealign performance**
 
 

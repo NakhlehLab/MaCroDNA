@@ -20,8 +20,7 @@ Department of Computer Science, Rice University
 ### Introduction
 MaCroDNA (**Ma**tching **Cro**ss-**D**omain **N**ucleic **A**cids) is a correlation-based 
 method to perform mapping between scRNA-seq gene expression and scDNA-seq copy number values. 
-This repository contains the source code for MaCroDNA described in the paper "MaCroDNA: Accurate integration of single-cell DNA and RNA
-data for a deeper understanding of tumor heterogeneity".
+This repository contains the source code for MaCroDNA described in the paper "Accurate integration of single-cell DNA and RNA for analyzing intratumor heterogeneity using MaCroDNA".
 
 ### Citation
 

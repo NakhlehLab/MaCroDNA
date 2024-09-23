@@ -1,6 +1,4 @@
 import numpy as np
-import gurobipy as gp
-from gurobipy import *
 import pandas as pd
 from scipy import spatial
 from numpy.linalg import norm
@@ -8,13 +6,25 @@ import math
 
 
 class MaCroDNA:
-    def __init__(self, rna_df=None, dna_df=None, dna_label=None):
+    def __init__(self, rna_df=None, dna_df=None, dna_label=None, solver="gurobi"):
         # INPUT
         # rna_df, dna_df -- dataframe, cols are cell ids, index are genes
         # dna_label -- dataframe, two cols, one is the clone id "clone", the other is the cell id "cell"
         self.rna_df = rna_df
         self.dna_df = dna_df
         self.dna_label = dna_label
+
+        if solver not in ["gurobi", "glpk"]:
+            raise ValueError("Solver must be either 'gurobi' or 'glpk'")
+        
+
+        if solver == "gurobi":
+            self.ilp = self.ilp_gurobi
+    
+        else:
+            self.ilp = self.ilp_pyomo
+
+            
 
 
 
@@ -24,7 +34,69 @@ class MaCroDNA:
     def cosine_similarity_np(self, x1, x2):
         return np.dot(x1 - x1.mean(), x2 - x2.mean()) / (1e-10 + norm(x1 - x1.mean()) * norm(x2 - x2.mean()))
 
-    def ilp(self, rna_idx, dna_idx, corrs):
+
+    def ilp_pyomo(self, rna_idx, dna_idx, corrs):
+        from pyomo.environ import ConcreteModel, Var, Objective
+        from pyomo.environ import Constraint, SolverFactory, Binary, maximize, RangeSet, value
+
+    
+        model = ConcreteModel()
+
+
+        num_rna = rna_idx.shape[0]
+        num_dna = dna_idx.shape[0]
+        n_min = min(num_rna, num_dna)
+
+        print("The smallest set has %s number of cells" % (n_min))
+
+        model.rna = RangeSet(0, num_rna - 1)
+        model.dna = RangeSet(0, num_dna - 1)
+
+        # Binary variables x[i, j] (correspondence between RNA and DNA)
+        model.x = Var(model.rna, model.dna, domain=Binary)
+
+
+
+        # Each RNA cell is assigned to at most one DNA cell (row constraints)
+        def row_constraint(model, i):
+            return sum(model.x[i, j] for j in model.dna) <= 1
+        model.row_constraints = Constraint(model.rna, rule=row_constraint)
+
+        # Each DNA cell is assigned to at most one RNA cell (column constraints)
+        def col_constraint(model, j):
+            return sum(model.x[i, j] for i in model.rna) <= 1
+        model.col_constraints = Constraint(model.dna, rule=col_constraint)
+
+        # Total number of assignments should be equal to n_min
+        def global_constraint(model):
+            return sum(model.x[i, j] for i in model.rna for j in model.dna) == n_min
+        model.global_constraint = Constraint(rule=global_constraint)
+
+        # Objective function (maximize the correlation between RNA and DNA assignments)
+        def objective_function(model):
+            return sum(model.x[i, j] * corrs[rna_idx[i]][dna_idx[j]] for i in model.rna for j in model.dna)
+        model.obj = Objective(rule=objective_function, sense=maximize)
+
+        #Solve the model
+        solver = SolverFactory('glpk')  # or use another solver like 'cbc' or 'gurobi'
+        results = solver.solve(model, tee=False, keepfiles=False, options={'output': '/dev/null'})
+        # Extract the objective value
+        objective_value = value(model.obj)
+
+        print(f"The optimal objective value is: {objective_value}")
+
+        # Extract the solution
+        solution = np.empty((num_rna, num_dna))
+        for i in model.rna:
+            for j in model.dna:
+                solution[i][j] = int(model.x[i, j].value)
+
+        return solution
+    
+
+    def ilp_gurobi(self, rna_idx, dna_idx, corrs):
+        import gurobipy as gp
+
 
         n_min = min(rna_idx.shape[0], dna_idx.shape[0])
         print("the smallest set has %s number of cells" % (n_min))
@@ -38,39 +110,39 @@ class MaCroDNA:
         for i in range(rna_idx.shape[0]):
             x.append([])
             for j in range(dna_idx.shape[0]):
-                x[i].append(m.addVar(vtype=GRB.BINARY, name="x[%d,%d]" % (i, j)))
+                x[i].append(m.addVar(vtype=gp.GRB.BINARY, name="x[%d,%d]" % (i, j)))
 
         # set the contraints for rows and columns
 
         for i in range(rna_idx.shape[0]):
             # At most one cell per row
-            m.addConstr(quicksum([x[i][j] for j in range(dna_idx.shape[0])]) <= 1, name="row" + str(i))
+            m.addConstr(gp.quicksum([x[i][j] for j in range(dna_idx.shape[0])]) <= 1, name="row" + str(i))
 
         for j in range(dna_idx.shape[0]):
             # At most one cell per column
-            m.addConstr(quicksum([x[i][j] for i in range(rna_idx.shape[0])]) <= 1, name="col" + str(i))
+            m.addConstr(gp.quicksum([x[i][j] for i in range(rna_idx.shape[0])]) <= 1, name="col" + str(i))
 
-        m.addConstr(quicksum([x[i][j] for i in range(rna_idx.shape[0]) for j in range(dna_idx.shape[0])]) == n_min,
+        m.addConstr(gp.quicksum([x[i][j] for i in range(rna_idx.shape[0]) for j in range(dna_idx.shape[0])]) == n_min,
                     name="global")
 
         # update the model
         m.update()
 
         # create the linear expression
-        obj = LinExpr()
+        obj = gp.LinExpr()
 
         for i in range(rna_idx.shape[0]):
             for j in range(dna_idx.shape[0]):
                 obj += x[i][j] * corrs[rna_idx[i]][dna_idx[j]]
 
         # set the objective
-        m.setObjective(obj, GRB.MAXIMIZE)
+        m.setObjective(obj, gp.GRB.MAXIMIZE)
 
         # optimize the model
         m.optimize()
 
         print('IsMIP: %d' % m.IsMIP)
-        if m.status == GRB.Status.INFEASIBLE:
+        if m.status == gp.GRB.Status.INFEASIBLE:
             print("The model is infeasible")
         print("Solved with MIPFocus: %d" % m.Params.MIPFocus)
         print("The model has been optimized")
@@ -86,7 +158,7 @@ class MaCroDNA:
     def cell2cell_assignment(self):
         dna_cells = list(self.dna_df.columns)
         rna_cells = list(self.rna_df.columns)
-        genes = set(self.dna_df.index).intersection(self.rna_df.index.to_list())
+        genes = list(set(self.dna_df.index).intersection(self.rna_df.index.to_list()))
         self.dna_df = self.dna_df.loc[genes,:]
         self.rna_df = self.rna_df.loc[genes,:]
 
@@ -229,7 +301,7 @@ class MaCroDNA:
         self.dna_df = dna_data
         self.rna_df = rna_data
         self.dna_label = dna_cluster
-        self.cell2clone_assignment()
+        res = self.cell2clone_assignment()
 
         print("**********")
         print("Finish Mapping")

@@ -8,6 +8,8 @@ if __name__ == '__main__':
     dna_cluster = pd.read_csv(DataFolder + "dna_cluster.csv", index_col=0)
     run_model = MaCroDNA(rna_df, dna_df, dna_cluster)
     cell2cell = run_model.cell2cell_assignment()
+
+    print(cell2cell)
     cell2clone = run_model.cell2clone_assignment()
     print("**********************")
     print("TEST FINISHED")
